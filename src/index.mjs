@@ -1,12 +1,23 @@
 import express from 'express';
+import { loggingMiddleware, logs } from './middleware/logging.mjs';
 
 const app = express();
 
 // middleware to parse json data
 app.use(express.json());
 
+
+
 const PORT = process.env.PORT || 3000;
 
+app.get("/api/v1/logs", (req, res) => {
+    res.json(logs);
+});
+
+// middleware to log requests
+app.use(loggingMiddleware);
+
+// products list
 const products = [
     {id : 1 , productName : 'product 1' , quantityAvailable : 100 , price : 300},
     {id : 2 , productName : 'product 2' , quantityAvailable : 200 , price : 400},
@@ -104,6 +115,26 @@ app.patch("/api/v1/products/:id", (req, res) => {
         ...products[findIndexProduct],
         ...body
     };
+    res.sendStatus(200);
+});
+
+// Delete product by id parameter
+
+app.delete("/api/v1/products/:id", (req, res) => {
+    const {
+        body,
+        params: {id}
+    } = req;
+    const parsedID = parseInt(id);
+    if(isNaN(parsedID)){
+        res.status(400).send('Invalid ID');
+    }
+
+    const findIndexProduct = products.findIndex((product) => product.id === parsedID);
+    if(findIndexProduct === -1){
+        res.status(404).send('Product not found');
+    }
+    products.splice(findIndexProduct,1);
     res.sendStatus(200);
 });
 
