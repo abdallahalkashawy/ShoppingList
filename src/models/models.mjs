@@ -8,7 +8,8 @@ export const products = [
 export const shoppingList = {
     products : [],
     totalPrice : 0,
-    count : 0
+    count : 0,
+    promoCodes : []
 };
 
 export const promoCodes = [
