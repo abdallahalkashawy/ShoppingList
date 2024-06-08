@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { createProductValidationSchema } from '../utils/validationSchema.mjs';
-import { query , validationResult , body , matchedData , checkSchema} from 'express-validator';
-import { products } from "../models/products.mjs";
+import { createProductValidationSchema , updateProductValidationSchema } from '../utils/validationSchema.mjs';
+import { validationResult , matchedData , checkSchema} from 'express-validator';
+import { products, shoppingList } from "../models/models.mjs";
 const router = Router();
 router.get("/api/v1/products", (req, res) => {
     console.log(req.query);
@@ -50,7 +50,7 @@ router.post("/api/v1/products",
     const data = matchedData(req);
     // const {body} = req;
     const newProduct = {
-        id : products[products.length - 1].id + 1,
+        id : products.length + 1,
         ...data
     }
     products.push(newProduct);
@@ -61,7 +61,13 @@ router.post("/api/v1/products",
 
 // update product by id parameter and body but must all fields be updated
 
-router.put("/api/v1/products/:id", (req, res) => {
+router.put("/api/v1/products/:id",
+    checkSchema(createProductValidationSchema) 
+    ,(req, res) => {
+    const result = validationResult(req);
+    if(!result.isEmpty()){
+            return res.status(400).json({errors : result.array()});
+    }
     const {
         body,
         params: {id}
@@ -79,12 +85,25 @@ router.put("/api/v1/products/:id", (req, res) => {
         id : parsedID,
         ...body
     };
+    const shoppingListProductIndex = shoppingList.products.findIndex((product) => product.id === parsedID);
+    if(shoppingListProductIndex !== -1){
+        shoppingList.products[shoppingListProductIndex] = {
+            id : parsedID,
+            ...body
+        };
+    }
     res.sendStatus(200);
 });
 
 // update specific product attribute by id parameter
 
-router.patch("/api/v1/products/:id", (req, res) => {
+router.patch("/api/v1/products/:id",
+    checkSchema(updateProductValidationSchema)
+    ,(req, res) => {
+    const result = validationResult(req);
+    if(!result.isEmpty()){
+            return res.status(400).json({errors : result.array()});
+    }
     const {
         body,
         params: {id}
