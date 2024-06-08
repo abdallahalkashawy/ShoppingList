@@ -1,11 +1,10 @@
 import { Router } from "express";
-import { createProductValidationSchema , updateProductValidationSchema } from '../utils/validationSchema.mjs';
-import { validationResult , matchedData , checkSchema} from 'express-validator';
+import { body , matchedData , checkSchema} from 'express-validator';
 import { products } from "../models/models.mjs";
 import { shoppingList } from "../models/models.mjs";
 const router = Router();
 
-
+// get shopping list
 
 router.get("/api/v1/shoppingList", (req, res) => {
     res.json(shoppingList);
@@ -55,21 +54,28 @@ router.post("/api/v1/shoppingList", (req, res) => {
 }
 );
 
+// remove product from the shopping list
 
-router.delete("/api/v1/shoppingList", (req, res) => {
+router.delete("/api/v1/shoppingList", 
+    body("productName").notEmpty().withMessage("must include productName")
+    ,(req, res) => {
     const { body } = req;
     const product = products.find((product) => product.productName === body.productName);
     if (!product) {
         return res.status(404).send('Product not found');
     }
+    const productIndexInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productName === body.productName);
+    if (productIndexInShoppingListIndex === -1) {
+        return res.status(404).send('Product not found in shopping list');
+    }
     const productIndex = products.findIndex((product) => product.productName === body.productName);
     products[productIndex] = {
         ...products[productIndex],
-        quantityAvailable: product.quantityAvailable + 1
+        quantityAvailable: product.quantityAvailable + shoppingList.products[productIndexInShoppingListIndex].count
     };
-    const productIndexInShoppingList = shoppingList.products.findIndex((product) => product.productName === body.productName);
-    shoppingList.products.splice(productIndexInShoppingList, 1);
-    shoppingList.totalPrice -= product.price;
+    shoppingList.count -= shoppingList.products[productIndexInShoppingListIndex].count;
+    shoppingList.totalPrice -= product.price * shoppingList.products[productIndexInShoppingListIndex].count;
+    shoppingList.products.splice(productIndexInShoppingListIndex, 1);
     res.json(shoppingList);
 }
 );

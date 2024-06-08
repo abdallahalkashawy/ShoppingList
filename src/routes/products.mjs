@@ -160,14 +160,22 @@ router.delete("/api/v1/products/:id", (req, res) => {
     } = req;
     const parsedID = parseInt(id);
     if(isNaN(parsedID)){
-        res.status(400).send('Invalid ID');
+        return res.status(400).send('Invalid ID');
     }
 
     const findIndexProduct = products.findIndex((product) => product.id === parsedID);
     if(findIndexProduct === -1){
-        res.status(404).send('Product not found');
+        return res.status(404).send('Product not found');
     }
+    const foundProduct = products[findIndexProduct];
     products.splice(findIndexProduct,1);
+    const productInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productName === foundProduct.productName);
+    if(productInShoppingListIndex !== -1){
+        const productPrice = shoppingList.products[productInShoppingListIndex].product.price * shoppingList.products[productInShoppingListIndex].count;
+        shoppingList.totalPrice -= productPrice;
+        shoppingList.count -= shoppingList.products[productInShoppingListIndex].count;
+        shoppingList.products.splice(productInShoppingListIndex,1);
+    }
     res.sendStatus(200);
 });
 
