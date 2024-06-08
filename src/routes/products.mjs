@@ -85,13 +85,9 @@ router.put("/api/v1/products/:id",
         id : parsedID,
         ...body
     };
+    const updatedProduct = products[findIndexProduct];
     const shoppingListProductIndex = shoppingList.products.findIndex((product) => product.id === parsedID);
-    if(shoppingListProductIndex !== -1){
-        shoppingList.products[shoppingListProductIndex] = {
-            id : parsedID,
-            ...body
-        };
-    }
+   
     res.sendStatus(200);
 });
 

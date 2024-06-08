@@ -22,24 +22,33 @@ router.post("/api/v1/shoppingList", (req, res) => {
     if(product.quantityAvailable === 0){
         return res.status(400).send('Product out of stock');
     }
-    const productIndex = products.findIndex((product) => product.productName === body.productName);
-    products[productIndex] = {
-        ...products[productIndex],
-        quantityAvailable: product.quantityAvailable - 1
-    };
+    
     const productInShoppingList = shoppingList.products.find((product) => product.product.productName === body.productName);
     if (productInShoppingList) {
         const productIndexInShoppingList = shoppingList.products.findIndex((product) => product.product.productName === body.productName);
         shoppingList.products[productIndexInShoppingList] = {
-            ...shoppingList.products[productIndexInShoppingList],
+            product :{
+                productName: shoppingList.products[productIndexInShoppingList].product.productName,
+                price: shoppingList.products[productIndexInShoppingList].product.price,
+                quantityAvailable: shoppingList.products[productIndexInShoppingList].product.quantityAvailable - 1
+            },
             count: (shoppingList.products[productIndexInShoppingList]).count + 1
         };
     } else {
         shoppingList.products.push({
-            product,
+            product: {
+                productName: product.productName,
+                price: product.price,
+                quantityAvailable: product.quantityAvailable - 1 
+            },
             count: 1
         });
     }
+    const productIndex = products.findIndex((product) => product.productName === body.productName);
+    products[productIndex] = {
+        ...products[productIndex],
+        quantityAvailable: products[productIndex].quantityAvailable  - 1
+    };
     shoppingList.totalPrice += product.price;
     shoppingList.count += 1;
     res.json(shoppingList);
