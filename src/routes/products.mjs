@@ -86,8 +86,22 @@ router.put("/api/v1/products/:id",
         ...body
     };
     const updatedProduct = products[findIndexProduct];
-    const shoppingListProductIndex = shoppingList.products.findIndex((product) => product.id === parsedID);
-   
+    const productInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productName === updatedProduct.productName);
+    if(productInShoppingListIndex !== -1){
+        shoppingList.products[productInShoppingListIndex] = {
+            product : {
+                productName: updatedProduct.productName,
+                price: updatedProduct.price,
+                quantityAvailable: updatedProduct.quantityAvailable
+            },
+            count: shoppingList.products[productInShoppingListIndex].count
+        };
+    }
+    let updatedTotal = 0;
+    shoppingList.products.forEach((product) => {
+        updatedTotal += product.product.price * product.count;
+    });
+    shoppingList.totalPrice = updatedTotal;
     res.sendStatus(200);
 });
 
@@ -117,6 +131,23 @@ router.patch("/api/v1/products/:id",
         ...products[findIndexProduct],
         ...body
     };
+    const updatedProduct = products[findIndexProduct];
+    const productInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productName === updatedProduct.productName);
+    if(productInShoppingListIndex !== -1){
+        shoppingList.products[productInShoppingListIndex] = {
+            product : {
+                productName: updatedProduct.productName,
+                price: updatedProduct.price,
+                quantityAvailable: updatedProduct.quantityAvailable
+            },
+            count: shoppingList.products[productInShoppingListIndex].count
+        };
+    }
+    let updatedTotal = 0;
+    shoppingList.products.forEach((product) => {
+        updatedTotal += product.product.price * product.count;
+    });
+    shoppingList.totalPrice = updatedTotal;
     res.sendStatus(200);
 });
 
