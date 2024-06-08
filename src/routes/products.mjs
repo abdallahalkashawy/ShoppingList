@@ -49,6 +49,10 @@ router.post("/api/v1/products",
     }
     const data = matchedData(req);
     // const {body} = req;
+    const product = products.find((product) => product.productName === data.productName);
+    if(product){
+        return res.status(400).send('Product already exists');
+    }
     const newProduct = {
         id : products.length + 1,
         ...data

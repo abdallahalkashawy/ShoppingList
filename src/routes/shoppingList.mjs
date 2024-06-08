@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body , matchedData , checkSchema} from 'express-validator';
+import { body} from 'express-validator';
 import { products } from "../models/models.mjs";
 import { shoppingList } from "../models/models.mjs";
 const router = Router();

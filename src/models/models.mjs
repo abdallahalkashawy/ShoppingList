@@ -10,3 +10,7 @@ export const shoppingList = {
     totalPrice : 0,
     count : 0
 };
+
+export const promoCodes = [
+    { promoCodeID : 1 , promoCodeName : '50PERCENTOFF' , promoCodePercentage : 50 },
+    { promoCodeID : 2 , promoCodeName : '20PERCENTOFF' , promoCodePercentage : 20 }]

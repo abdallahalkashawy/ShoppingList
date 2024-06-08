@@ -46,3 +46,21 @@ export const updateProductValidationSchema = {
         }
     }
 };
+
+
+export const createPromoCodeValidationSchema = {
+    promoCodeName:{
+        isString:{
+            errorMessage:'promoCodeName must be a string'
+        },
+        notEmpty:{
+            errorMessage:'promoCodeName cannot be empty'
+        }
+    },
+    promoCodePercentage:{
+        isInt :{
+            options:{gt:0,lt:101},
+            errorMessage:'promoCodePercentage must be an integer between 1 and 100'
+        }
+    }
+}
