@@ -41,6 +41,10 @@ router.delete("/api/v1/promocodes", (req, res) => {
         return res.status(404).send('Promo code not found');
     }
     const promoCodeIndex = promoCodes.findIndex((promoCode) => promoCode.promoCodeName === body.promoCodeName);
+    if(shoppingList.promoCodes[0] === promoCode.promoCodeName){
+        shoppingList.totalPrice = shoppingList.totalPrice / (1 - (promoCode.promoCodePercentage / 100));
+        shoppingList.promoCodes=[];
+    }
     promoCodes.splice(promoCodeIndex, 1);
     res.json(promoCodes);
 });
@@ -56,7 +60,7 @@ router.post("/api/v1/promocodes/apply", (req, res) => {
     if (!promoCode) { 
         return res.status(404).send('Promo code not found');
     }
-    if(shoppingList.promoCodes.includes(promoCode.promoCodeName)){
+    if(shoppingList.promoCodes.length > 0){
         return res.status(400).send('Promo code already applied');
     }
     if(shoppingList.totalPrice == 0)
@@ -71,24 +75,12 @@ router.post("/api/v1/promocodes/apply", (req, res) => {
 // remove promo code from the shopping list
 
 router.delete("/api/v1/promocodes/remove", (req, res) => {
-    const { body } = req;
-    if(!body.promoCodeName){
-        return res.status(400).send('must include promoCodeName');
-    }
-    const promoCode = promoCodes.find((promoCode) => promoCode.promoCodeName === body.promoCodeName);
-    if (!promoCode) { 
+    if (shoppingList.promoCodes.length === 0) { 
         return res.status(404).send('Promo code not found');
     }
-    if(!shoppingList.promoCodes.includes(promoCode.promoCodeName)){
-        return res.status(400).send('Promo code not applied');
-    }
-    let totalPrice = 0 ;
-    shoppingList.products.forEach((product) => {
-        totalPrice += product.product.price * product.count;
-    });
-    shoppingList.totalPrice = totalPrice;
-    const promoCodeIndex = shoppingList.promoCodes.findIndex((promoCode) => promoCode === body.promoCodeName);
-    shoppingList.promoCodes.splice(promoCodeIndex, 1);
+    const promoCode = promoCodes.find((promoCode) => promoCode.promoCodeName === shoppingList.promoCodes[0]);
+    shoppingList.totalPrice = shoppingList.totalPrice / (1 - (promoCode.promoCodePercentage / 100));
+    shoppingList.promoCodes=[];
     res.json(shoppingList);
 });
 export default router;
