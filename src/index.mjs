@@ -15,7 +15,7 @@ app.get("/api/v1/logs", (req, res) => {
 });
 
 // middleware to log requests
-app.use(loggingMiddleware);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { createProductValidationSchema , updateProductValidationSchema } from '../utils/validationSchema.mjs';
 import { validationResult , matchedData , checkSchema} from 'express-validator';
 import { products, shoppingList } from "../models/models.mjs";
+import { getProductByIdHandler } from "../handlers/products.mjs";
 const router = Router();
 router.get("/api/v1/products", (req, res) => {
     console.log(req.query);
@@ -25,17 +26,7 @@ router.get("/api/v1/products", (req, res) => {
 
 // get specific product by id parameter
 
-router.get("/api/v1/products/:id" , (req, res) => {
-    const id = req.params.id;
-    const product = products.find((product) => product.id === parseInt(id));
-    if(!product){
-        res.status(404).send('Product not found');
-    }
-    else{
-        res.json(product);
-    }
-}
-);
+router.get("/api/v1/products/:id" , getProductByIdHandler);
 
 
 // add product to the products list
