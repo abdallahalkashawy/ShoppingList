@@ -12,7 +12,6 @@ export const getProductByIdHandler = (req, res) => {
 };
 
 export const getProductsHandler = (req, res) => {
-    console.log(req.query);
     const {
         query: {
             filter,
@@ -24,7 +23,6 @@ export const getProductsHandler = (req, res) => {
         res.json(products);
     }
     if(filter && value){
-        console.log("filter, value");
         const filteredProducts = products.filter((product) => product[filter].includes(value));
         res.json(filteredProducts);
     }
@@ -83,12 +81,14 @@ export const putUpdateProductHandler = (req, res) => {
             },
             count: shoppingList.products[productInShoppingListIndex].count
         };
+        let updatedTotal = 0;
+         shoppingList.products.forEach((product) => {
+            updatedTotal += product.product.price * product.count;
+         });
+        shoppingList.totalPrice = updatedTotal;
+        return res.status(201).send('Product updated in shopping list');
     }
-    let updatedTotal = 0;
-    shoppingList.products.forEach((product) => {
-        updatedTotal += product.product.price * product.count;
-    });
-    shoppingList.totalPrice = updatedTotal;
+    
     res.sendStatus(200);
 }
 
@@ -125,12 +125,14 @@ export const patchUpdateProductHandler = (req, res) => {
             },
             count: shoppingList.products[productInShoppingListIndex].count
         };
+        let updatedTotal = 0;
+         shoppingList.products.forEach((product) => {
+             updatedTotal += product.product.price * product.count;
+        });
+         shoppingList.totalPrice = updatedTotal;
+         res.status(201).send('Product updated in shopping list');
     }
-    let updatedTotal = 0;
-    shoppingList.products.forEach((product) => {
-        updatedTotal += product.product.price * product.count;
-    });
-    shoppingList.totalPrice = updatedTotal;
+    
     res.sendStatus(200);
 }
 
@@ -156,6 +158,7 @@ export const deleteProductHandler = (req, res) => {
         shoppingList.totalPrice -= productPrice;
         shoppingList.count -= shoppingList.products[productInShoppingListIndex].count;
         shoppingList.products.splice(productInShoppingListIndex,1);
+        res.status(204).send('Product deleted from shopping list');
     }
     res.sendStatus(200);
 }
