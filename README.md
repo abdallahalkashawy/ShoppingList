@@ -57,6 +57,7 @@ npm test
 ## Base URL
 
 The base URL for all endpoints is: `http://localhost:3000/api/v1`
+The API is hosted at: [shoppinglist-sparepayemnts](https://shoppinglist-sparepayment-0e3d5e1c93f0.herokuapp.com/)
 
 ## Endpoints
 
