@@ -20,7 +20,7 @@ export const createPromoCodeHandler = (req, res) => {
         ...body
     }
     promoCodes.push(addedPromoCode);
-    res.json(promoCodes);
+    res.json(addedPromoCode);
 };
 
 export const deletePromoCodeHandler = (req, res) => {

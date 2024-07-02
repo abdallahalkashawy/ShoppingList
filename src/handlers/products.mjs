@@ -45,7 +45,7 @@ export const createProductHandler = (req, res) => {
         ...data
     }
     products.push(newProduct);
-    res.json(products);
+    res.json(newProduct);
 };
 
 export const putUpdateProductHandler = (req, res) => {
