@@ -6,19 +6,19 @@ const router = Router();
 
 // get promo codes list
 
-router.get("/api/v1/promocodes", getPromocodesHandler);
+router.get("/getPromocodes", getPromocodesHandler);
 
 // add promo code to the promo codes list
-router.post("/api/v1/promocodes",checkSchema(createPromoCodeValidationSchema),createPromoCodeHandler);
+router.post("/createPromoCode",checkSchema(createPromoCodeValidationSchema),createPromoCodeHandler);
 
 // remove promo code from the promo codes list
-router.delete("/api/v1/promocodes", deletePromoCodeHandler);
+router.delete("/deletePromoCode", deletePromoCodeHandler);
 
 // apply promo code to the shopping list
 
-router.post("/api/v1/promocodes/apply", applyPromoCodeHandler);
+router.post("/applyPromoCode", applyPromoCodeHandler);
 
 // remove promo code from the shopping list
 
-router.delete("/api/v1/promocodes/remove",removePromoCodeFromShoppingListHandler);
+router.delete("/removePromoCodeFromShoppingList",removePromoCodeFromShoppingListHandler);
 export default router;

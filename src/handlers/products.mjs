@@ -66,10 +66,15 @@ export const putUpdateProductHandler = (req, res) => {
     if(findIndexProduct === -1){
         res.status(404).send('Product not found');
     }
-    products[findIndexProduct] = {
-        id : parsedID,
-        ...body
-    };
+    const isIdTaken = products.some(product => product.id === body.id);
+    if (!isIdTaken) {
+        products[findIndexProduct] = {
+            id: body.id ? body.id : parsedID,
+            ...body
+        };
+    } else {
+        res.status(400).send('ID already taken');
+    }
     const updatedProduct = products[findIndexProduct];
     const productInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productName === updatedProduct.productName);
     if(productInShoppingListIndex !== -1){
@@ -110,10 +115,15 @@ export const patchUpdateProductHandler = (req, res) => {
     if(findIndexProduct === -1){
         res.status(404).send('Product not found');
     }
-    products[findIndexProduct] = {
-        ...products[findIndexProduct],
-        ...body
-    };
+    const isIdTaken = products.some(product => product.id === body.id);
+    if (!isIdTaken) {
+        products[findIndexProduct] = {
+            ...products[findIndexProduct],
+            ...body
+        };
+    } else {
+        res.status(400).send('ID already taken');
+    }
     const updatedProduct = products[findIndexProduct];
     const productInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productName === updatedProduct.productName);
     if(productInShoppingListIndex !== -1){

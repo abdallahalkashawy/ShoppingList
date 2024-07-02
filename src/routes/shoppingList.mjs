@@ -5,15 +5,15 @@ const router = Router();
 
 // get shopping list
 
-router.get("/api/v1/shoppingList", getShoppingListHandler);
+router.get("/getShoppingList", getShoppingListHandler);
 
 // add product to the shopping list
 
-router.post("/api/v1/shoppingList", addProductToShoppingListHandler);
+router.post("/addProductToShoppingList", addProductToShoppingListHandler);
 
 // remove product from the shopping list
 
-router.delete("/api/v1/shoppingList", 
+router.delete("/removeProductFromShoppingList", 
     body("productName").notEmpty().withMessage("must include productName")
     ,removeProductFromShoppingListHandler
 );

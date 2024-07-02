@@ -64,7 +64,7 @@ export const applyPromoCodeHandler = (req, res) => {
 
 export const removePromoCodeFromShoppingListHandler =  (req, res) => {
     if (shoppingList.promoCodes.length === 0) { 
-        return res.status(404).send('Promo code not found');
+        return res.status(404).send('Promo Not Applied');
     }
     const promoCode = promoCodes.find((promoCode) => promoCode.promoCodeName === shoppingList.promoCodes[0]);
     shoppingList.totalPrice = shoppingList.totalPrice / (1 - (promoCode.promoCodePercentage / 100));

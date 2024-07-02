@@ -7,8 +7,8 @@ import { loggingMiddleware } from "../middleware/logging.mjs";
 const router = Router();
 
 router.use(loggingMiddleware);
-router.use(productRouter);
-router.use(shoppingListRouter);
-router.use(promocodeRouter);
+router.use("/api/v1/products",productRouter);
+router.use("/api/v1/shoppingList",shoppingListRouter);
+router.use("/api/v1/promocodes",promocodeRouter);
 
 export default router;
