@@ -75,23 +75,50 @@ export const putUpdateProductHandler = (req, res) => {
     } else {
         return res.status(400).send('ID already taken');
     }
+    const updatedQuatiyAvailable = body.quantityAvailable;
+    const updatedPrice = body.price;
     const updatedProduct = products[findIndexProduct];
-    const productInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productName === updatedProduct.productName);
+    const productInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productId === updatedProduct.id);
     if(productInShoppingListIndex !== -1){
-        shoppingList.products[productInShoppingListIndex] = {
-            product : {
+        if(updatedQuatiyAvailable < shoppingList.products[productInShoppingListIndex].count){
+            const productPrice = shoppingList.products[productInShoppingListIndex].product.price * shoppingList.products[productInShoppingListIndex].count;
+            shoppingList.totalPrice -= productPrice;
+            shoppingList.count -= shoppingList.products[productInShoppingListIndex].count;
+            shoppingList.products.splice(productInShoppingListIndex,1);
+            products[findIndexProduct] = {
+                ...products[findIndexProduct],
+                ...body
+            };
+        }
+        else{
+            shoppingList.products[productInShoppingListIndex] = {
+                product : {
+                    productId : updatedProduct.id,
+                    productName: updatedProduct.productName,
+                    price: updatedPrice ? updatedPrice : updatedProduct.price,
+                    quantityAvailable: updatedQuatiyAvailable ?  updatedQuatiyAvailable - shoppingList.products[productInShoppingListIndex].count : updatedProduct.quantityAvailable
+                },
+                count: shoppingList.products[productInShoppingListIndex].count
+            };
+            let updatedTotal = 0;
+            shoppingList.products.forEach((product) => {
+                updatedTotal += product.product.price * product.count;
+            });
+            shoppingList.totalPrice = updatedTotal;
+            products[findIndexProduct] = {
+                id : updatedProduct.id,
                 productName: updatedProduct.productName,
                 price: updatedProduct.price,
-                quantityAvailable: updatedProduct.quantityAvailable
-            },
-            count: shoppingList.products[productInShoppingListIndex].count
+                quantityAvailable: updatedQuatiyAvailable ? updatedQuatiyAvailable - shoppingList.products[productInShoppingListIndex].count : updatedProduct.quantityAvailable
+            };
+            return res.status(201).send('Product updated in shopping list');
+        }
+    }
+    else{
+        products[findIndexProduct] = {
+            ...products[findIndexProduct],
+            ...body
         };
-        let updatedTotal = 0;
-         shoppingList.products.forEach((product) => {
-            updatedTotal += product.product.price * product.count;
-         });
-        shoppingList.totalPrice = updatedTotal;
-        return res.status(201).send('Product updated in shopping list');
     }
     
     return res.sendStatus(200);
@@ -110,7 +137,15 @@ export const patchUpdateProductHandler = (req, res) => {
     if(isNaN(parsedID)){
         return res.status(400).send('Invalid ID');
     }
-
+    const isIdTaken = products.some(product => product.id === body.id);
+    if (!isIdTaken) {
+        products[findIndexProduct] = {
+            id: body.id ? body.id : parsedID,
+            ...body
+        };
+    } else {
+        return res.status(400).send('ID already taken');
+    }
     const findIndexProduct = products.findIndex((product) => product.id === parsedID);
     if(findIndexProduct === -1){
         return res.status(404).send('Product not found');
@@ -136,8 +171,8 @@ export const patchUpdateProductHandler = (req, res) => {
                 product : {
                     productId : updatedProduct.id,
                     productName: updatedProduct.productName,
-                    price: updatedProduct.price,
-                    quantityAvailable: updatedQuatiyAvailable - shoppingList.products[productInShoppingListIndex].count
+                    price: updatedPrice ? updatedPrice : updatedProduct.price,
+                    quantityAvailable: updatedQuatiyAvailable ?  updatedQuatiyAvailable - shoppingList.products[productInShoppingListIndex].count : updatedProduct.quantityAvailable
                 },
                 count: shoppingList.products[productInShoppingListIndex].count
             };
@@ -150,7 +185,7 @@ export const patchUpdateProductHandler = (req, res) => {
                 id : updatedProduct.id,
                 productName: updatedProduct.productName,
                 price: updatedProduct.price,
-                quantityAvailable: updatedQuatiyAvailable - shoppingList.products[productInShoppingListIndex].count
+                quantityAvailable: updatedQuatiyAvailable ? updatedQuatiyAvailable - shoppingList.products[productInShoppingListIndex].count : updatedProduct.quantityAvailable
             };
             return res.status(201).send('Product updated in shopping list');
         }
