@@ -210,27 +210,112 @@ router.get("/api/v1/shoppingList", getShoppingListHandler);
 
 ### Add Product to Shopping List
 
-- **Endpoint**: `/api/v1/shoppingList`
+- **URL**: `/api/v1/shoppingList/addProductToShoppingList`
 - **Method**: `POST`
 - **Description**: Adds a specified product to the shopping list if available in inventory.
-- **Handler Function**: `addProductToShoppingListHandler`
+- **Request Body**:
+  ```json
+  {
+    "productId": 1
+  }
+  ```
+- **Responses**:
+  - `200 OK`: Successfully added the product to the shopping list.
 
-```javascript
-router.post("/api/v1/shoppingList", addProductToShoppingListHandler);
-```
+    ```json
+    {
+      "shoppingList": [
+        {
+          "productId": 1,
+          "productName": "Product 1",
+          "price": 100,
+          "quantityAvailable": 9,
+          "count": 1
+        }
+      ],
+      "totalPrice": 100,
+      "count": 1
+    }
+    ```
+  - `400 Bad Request`: If the request body is invalid.
+
+    ```json
+    {
+      "errors": [
+        {
+          "msg": "Product ID must not be empty",
+          "param": "productId",
+          "location": "body"
+        },
+        {
+          "msg": "Product ID must be a number",
+          "param": "productId",
+          "location": "body"
+        }
+      ]
+    }
+    ```
+  - `404 Not Found`: If the product is not found in the inventory.
+
+    ```json
+    {
+      "error": "Product not found"
+    }
+    ```
+  - `400 Bad Request`: If the product is out of stock.
+
+    ```json
+    {
+      "error": "Product out of stock"
+    }
+    ```
 
 ### Remove Product from Shopping List
 
-- **Endpoint**: `/api/v1/shoppingList`
+- **URL**: `/api/v1/shoppingList/removeProductFromShoppingList`
 - **Method**: `DELETE`
-- **Middleware**: Validates product name in the request body.
 - **Description**: Removes a specified product from the shopping list and updates the stock.
-- **Handler Function**: `removeProductFromShoppingListReturnHandler`
+- **Request Body**:
+  ```json
+  {
+    "productId": 1
+  }
+  ```
+- **Responses**:
+  - `200 OK`: Successfully removed the product from the shopping list.
 
-```javascript
-router.delete("/api/v1/shoppingList", body("productName").notEmpty().withMessage("Product name must be included"), removeProductFromShopping ListHandler);
-```
+    ```json
+    {
+      "shoppingList": [],
+      "totalPrice": 0,
+      "count": 0
+    }
+    ```
+  - `400 Bad Request`: If the request body is invalid.
 
+    ```json
+    {
+      "errors": [
+        {
+          "msg": "Product ID must not be empty",
+          "param": "productId",
+          "location": "body"
+        },
+        {
+          "msg": "Product ID must be a number",
+          "param": "productId",
+          "location": "body"
+        }
+      ]
+    }
+    ```
+  - `404 Not Found`: If the product is not found in the shopping list.
+
+    ```json
+    {
+      "error": "Product not found in shopping list"
+    }
+    ```
 
 ### Get Promo Codes List
 - **Endpoint**: `/api/v1/promocodes`
