@@ -6,7 +6,8 @@ export const getShoppingListHandler = (req, res) => {
 
 export const addProductToShoppingListHandler = (req, res) => {
     const { body } = req;
-    const product = products.find((product) => product.productName === body.productName);
+    // const product = products.find((product) => product.productName === body.productName);
+    const product = products.find((product) => product.id === body.productId);
     if (!product) { 
         return res.status(404).send('Product not found');
     }
@@ -14,11 +15,12 @@ export const addProductToShoppingListHandler = (req, res) => {
         return res.status(400).send('Product out of stock');
     }
     
-    const productInShoppingList = shoppingList.products.find((product) => product.product.productName === body.productName);
+    const productInShoppingList = shoppingList.products.find((product) => product.product.productId === body.productId);
     if (productInShoppingList) {
-        const productIndexInShoppingList = shoppingList.products.findIndex((product) => product.product.productName === body.productName);
+        const productIndexInShoppingList = shoppingList.products.findIndex((product) => product.product.productId === body.productId);
         shoppingList.products[productIndexInShoppingList] = {
             product :{
+                productId: shoppingList.products[productIndexInShoppingList].product.productId,
                 productName: shoppingList.products[productIndexInShoppingList].product.productName,
                 price: shoppingList.products[productIndexInShoppingList].product.price,
                 quantityAvailable: shoppingList.products[productIndexInShoppingList].product.quantityAvailable - 1
@@ -28,6 +30,7 @@ export const addProductToShoppingListHandler = (req, res) => {
     } else {
         shoppingList.products.push({
             product: {
+                productId: product.id,
                 productName: product.productName,
                 price: product.price,
                 quantityAvailable: product.quantityAvailable - 1 
@@ -35,7 +38,7 @@ export const addProductToShoppingListHandler = (req, res) => {
             count: 1
         });
     }
-    const productIndex = products.findIndex((product) => product.productName === body.productName);
+    const productIndex = products.findIndex((product) => product.id === body.productId);
     products[productIndex] = {
         ...products[productIndex],
         quantityAvailable: products[productIndex].quantityAvailable  - 1
@@ -47,15 +50,15 @@ export const addProductToShoppingListHandler = (req, res) => {
 
 export const removeProductFromShoppingListHandler = (req, res) => {
     const { body } = req;
-    const product = products.find((product) => product.productName === body.productName);
+    const product = products.find((product) => product.id === body.productId);
     if (!product) {
         return res.status(404).send('Product not found');
     }
-    const productIndexInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productName === body.productName);
+    const productIndexInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productId === body.productId);
     if (productIndexInShoppingListIndex === -1) {
         return res.status(404).send('Product not found in shopping list');
     }
-    const productIndex = products.findIndex((product) => product.productName === body.productName);
+    const productIndex = products.findIndex((product) => product.id === body.productId);
     products[productIndex] = {
         ...products[productIndex],
         quantityAvailable: product.quantityAvailable + shoppingList.products[productIndexInShoppingListIndex].count
