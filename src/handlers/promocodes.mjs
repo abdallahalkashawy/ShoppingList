@@ -2,13 +2,13 @@ import { promoCodes } from "../models/models.mjs";
 import { validationResult } from "express-validator";
 import { shoppingList } from "../models/models.mjs";
 export const getPromocodesHandler = (req, res) => {
-    res.json(promoCodes);
+   return res.json(promoCodes);
 };
 
 export const createPromoCodeHandler = (req, res) => {
     const result = validationResult(req);
     if(!result.isEmpty()){
-            return res.status(400).json(result.array());
+        return res.status(400).json(result.array());
     }
     const { body } = req;
     const promoCode = promoCodes.find((promoCode) => promoCode.promoCodeName === body.promoCodeName);
@@ -20,7 +20,7 @@ export const createPromoCodeHandler = (req, res) => {
         ...body
     }
     promoCodes.push(addedPromoCode);
-    res.json(addedPromoCode);
+   return res.json(addedPromoCode);
 };
 
 export const deletePromoCodeHandler = (req, res) => {
@@ -38,7 +38,7 @@ export const deletePromoCodeHandler = (req, res) => {
         shoppingList.promoCodes=[];
     }
     promoCodes.splice(promoCodeIndex, 1);
-    res.json(promoCodes);
+   return res.json(promoCodes);
 }
 
 export const applyPromoCodeHandler = (req, res) => {
@@ -59,7 +59,7 @@ export const applyPromoCodeHandler = (req, res) => {
     }
     shoppingList.totalPrice = shoppingList.totalPrice - (shoppingList.totalPrice * promoCode.promoCodePercentage / 100);
     shoppingList.promoCodes.push(promoCode.promoCodeName);
-    res.json(shoppingList);
+   return res.json(shoppingList);
 }
 
 export const removePromoCodeFromShoppingListHandler =  (req, res) => {
@@ -69,6 +69,6 @@ export const removePromoCodeFromShoppingListHandler =  (req, res) => {
     const promoCode = promoCodes.find((promoCode) => promoCode.promoCodeName === shoppingList.promoCodes[0]);
     shoppingList.totalPrice = shoppingList.totalPrice / (1 - (promoCode.promoCodePercentage / 100));
     shoppingList.promoCodes=[];
-    res.json(shoppingList);
+   return res.json(shoppingList);
 }
 

@@ -20,13 +20,13 @@ export const getProductsHandler = (req, res) => {
     } = req;
 
     if(!filter & !value){
-        res.json(products);
+        return res.json(products);
     }
     if(filter && value){
         const filteredProducts = products.filter((product) => product[filter].includes(value));
-        res.json(filteredProducts);
+        return res.json(filteredProducts);
     }
-    res.json(products);
+    return res.json(products);
 };
 
 export const createProductHandler = (req, res) => {
@@ -45,7 +45,7 @@ export const createProductHandler = (req, res) => {
         ...data
     }
     products.push(newProduct);
-    res.json(newProduct);
+    return res.json(newProduct);
 };
 
 export const putUpdateProductHandler = (req, res) => {
@@ -59,12 +59,12 @@ export const putUpdateProductHandler = (req, res) => {
     } = req;
     const parsedID = parseInt(id);
     if(isNaN(parsedID)){
-        res.status(400).send('Invalid ID');
+        return res.status(400).send('Invalid ID');
     }
 
     const findIndexProduct = products.findIndex((product) => product.id === parsedID);
     if(findIndexProduct === -1){
-        res.status(404).send('Product not found');
+        return res.status(404).send('Product not found');
     }
     const isIdTaken = products.some(product => product.id === body.id);
     if (!isIdTaken) {
@@ -73,7 +73,7 @@ export const putUpdateProductHandler = (req, res) => {
             ...body
         };
     } else {
-        res.status(400).send('ID already taken');
+        return res.status(400).send('ID already taken');
     }
     const updatedProduct = products[findIndexProduct];
     const productInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productName === updatedProduct.productName);
@@ -94,7 +94,7 @@ export const putUpdateProductHandler = (req, res) => {
         return res.status(201).send('Product updated in shopping list');
     }
     
-    res.sendStatus(200);
+    return res.sendStatus(200);
 }
 
 export const patchUpdateProductHandler = (req, res) => {
@@ -108,12 +108,12 @@ export const patchUpdateProductHandler = (req, res) => {
     } = req;
     const parsedID = parseInt(id);
     if(isNaN(parsedID)){
-        res.status(400).send('Invalid ID');
+        return res.status(400).send('Invalid ID');
     }
 
     const findIndexProduct = products.findIndex((product) => product.id === parsedID);
     if(findIndexProduct === -1){
-        res.status(404).send('Product not found');
+        return res.status(404).send('Product not found');
     }
     const isIdTaken = products.some(product => product.id === body.id);
     if (!isIdTaken) {
@@ -122,7 +122,7 @@ export const patchUpdateProductHandler = (req, res) => {
             ...body
         };
     } else {
-        res.status(400).send('ID already taken');
+       return res.status(400).send('ID already taken');
     }
     const updatedProduct = products[findIndexProduct];
     const productInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productName === updatedProduct.productName);
@@ -140,10 +140,10 @@ export const patchUpdateProductHandler = (req, res) => {
              updatedTotal += product.product.price * product.count;
         });
          shoppingList.totalPrice = updatedTotal;
-         res.status(201).send('Product updated in shopping list');
+         return res.status(201).send('Product updated in shopping list');
     }
     
-    res.sendStatus(200);
+    return res.sendStatus(200);
 }
 
 export const deleteProductHandler = (req, res) => {
@@ -168,7 +168,7 @@ export const deleteProductHandler = (req, res) => {
         shoppingList.totalPrice -= productPrice;
         shoppingList.count -= shoppingList.products[productInShoppingListIndex].count;
         shoppingList.products.splice(productInShoppingListIndex,1);
-        res.status(204).send('Product deleted from shopping list');
+        return res.status(204).send('Product deleted from shopping list');
     }
-    res.sendStatus(200);
+    return res.sendStatus(200);
 }

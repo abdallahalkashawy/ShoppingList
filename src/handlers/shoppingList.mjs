@@ -1,7 +1,7 @@
 import { products , shoppingList} from "../models/models.mjs";
 
 export const getShoppingListHandler = (req, res) => {
-    res.json(shoppingList);
+   return res.json(shoppingList);
 }
 
 export const addProductToShoppingListHandler = (req, res) => {
@@ -42,7 +42,7 @@ export const addProductToShoppingListHandler = (req, res) => {
     };
     shoppingList.totalPrice += product.price;
     shoppingList.count += 1;
-    res.json(shoppingList);
+   return res.json(shoppingList);
 }
 
 export const removeProductFromShoppingListHandler = (req, res) => {
@@ -63,5 +63,5 @@ export const removeProductFromShoppingListHandler = (req, res) => {
     shoppingList.count -= shoppingList.products[productIndexInShoppingListIndex].count;
     shoppingList.totalPrice -= product.price * shoppingList.products[productIndexInShoppingListIndex].count;
     shoppingList.products.splice(productIndexInShoppingListIndex, 1);
-    res.json(shoppingList);
+   return res.json(shoppingList);
 }
