@@ -1,10 +1,15 @@
 import { products , shoppingList} from "../models/models.mjs";
+import { validationResult } from "express-validator";
 
 export const getShoppingListHandler = (req, res) => {
    return res.json(shoppingList);
 }
 
 export const addProductToShoppingListHandler = (req, res) => {
+    const result = validationResult(req);
+    if(!result.isEmpty()){
+        return res.status(400).json(result.array());
+    }
     const { body } = req;
     // const product = products.find((product) => product.productName === body.productName);
     const product = products.find((product) => product.id === body.productId);
@@ -49,6 +54,10 @@ export const addProductToShoppingListHandler = (req, res) => {
 }
 
 export const removeProductFromShoppingListHandler = (req, res) => {
+    const result = validationResult(req);
+    if(!result.isEmpty()){
+        return res.status(400).json(result.array());
+    }
     const { body } = req;
     const product = products.find((product) => product.id === body.productId);
     if (!product) {

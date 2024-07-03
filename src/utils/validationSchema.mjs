@@ -64,3 +64,50 @@ export const createPromoCodeValidationSchema = {
         }
     }
 }
+
+export const removeProductFromShoppingListSchema = {
+    productId: {
+        in: ['body'],
+        notEmpty: {
+            errorMessage: 'Product ID must not be empty',
+        },
+        isNumeric: {
+            errorMessage: 'Product ID must be a number',
+        },
+        custom: {
+            options: (value) => {
+                if (isNaN(value)) {
+                    throw new Error('Product ID must be a valid number');
+                }
+                if (value <= 0) {
+                    throw new Error('Product ID must not be negative');
+                }
+                return true;
+            },
+        },
+    },
+};
+
+export const addProductToShoppingListSchema = 
+{
+    productId: {
+        in: ['body'],
+        notEmpty: {
+            errorMessage: 'Product ID must not be empty',
+        },
+        isNumeric: {
+            errorMessage: 'Product ID must be a number',
+        },
+        custom: {
+            options: (value) => {
+                if (isNaN(value)) {
+                    throw new Error('Product ID must be a valid number');
+                }
+                if (value <= 0) {
+                    throw new Error('Product ID must not be negative');
+                }
+                return true;
+            },
+        },
+    },
+};
