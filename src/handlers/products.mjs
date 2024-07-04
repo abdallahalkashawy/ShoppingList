@@ -216,7 +216,7 @@ export const deleteProductHandler = (req, res) => {
     }
     const foundProduct = products[findIndexProduct];
     products.splice(findIndexProduct,1);
-    const productInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productName === foundProduct.productName);
+    const productInShoppingListIndex = shoppingList.products.findIndex((product) => product.product.productId === foundProduct.id);
     if(productInShoppingListIndex !== -1){
         const productPrice = shoppingList.products[productInShoppingListIndex].product.price * shoppingList.products[productInShoppingListIndex].count;
         shoppingList.totalPrice -= productPrice;
