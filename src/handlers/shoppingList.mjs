@@ -48,7 +48,12 @@ export const addProductToShoppingListHandler = (req, res) => {
         ...products[productIndex],
         quantityAvailable: products[productIndex].quantityAvailable  - 1
     };
-    shoppingList.totalPrice += product.price;
+    if(shoppingList.promoCodes.length > 0){
+        shoppingList.totalPrice += product.price * (shoppingList.promoCodes[0].promoCodePercentage / 100);
+    }
+    else{
+        shoppingList.totalPrice += product.price;
+    }
     shoppingList.count += 1;
    return res.json(shoppingList);
 }
