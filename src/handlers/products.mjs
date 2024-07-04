@@ -36,12 +36,12 @@ export const createProductHandler = (req, res) => {
     }
     const data = matchedData(req);
     // const {body} = req;
-    const product = products.find((product) => product.productName === data.productName);
+    const product = products.find((product) => product.id === data.id);
     if(product){
         return res.status(400).send('Product already exists');
     }
     const newProduct = {
-        id : products.length + 1,
+        id : data.id ? data.id : products.length + 1,
         ...data
     }
     products.push(newProduct);

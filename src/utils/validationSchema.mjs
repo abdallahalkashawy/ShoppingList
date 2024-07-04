@@ -1,4 +1,11 @@
 export const createProductValidationSchema = {
+    id:{
+        optional: true,
+        isInt:{
+            options:{gt:0},
+            errorMessage:'id must be a positive integer'
+        }
+    },
     productName:{
         isString:{
             errorMessage:'productName must be a string'
