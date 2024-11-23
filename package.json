@@ -16,7 +16,9 @@
     "@babel/node": "^7.24.7",
     "@babel/preset-env": "^7.24.7",
     "express": "^4.19.2",
-    "express-validator": "^7.1.0"
+    "express-validator": "^7.1.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
